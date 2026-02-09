@@ -1,6 +1,7 @@
 using CarSimulatorApp.Data;
 using CarSimulatorApp.Infrastructure.Data;
 using CarSimulatorApp.Infrastructure.Data.Domain;
+using CarSimulatorApp.Infrastructure.Data.Infrastructre;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace CarSimulatorApp
             builder.Services.AddControllersWithViews();
     
             var app = builder.Build();
-
+            app.PrepareDatabase();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
