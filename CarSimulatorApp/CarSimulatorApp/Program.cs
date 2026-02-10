@@ -1,7 +1,9 @@
+using CarSimulatorApp.Core.Contracts;
+using CarSimulatorApp.Core.Services;
 using CarSimulatorApp.Data;
 using CarSimulatorApp.Infrastructure.Data;
 using CarSimulatorApp.Infrastructure.Data.Domain;
-using CarSimulatorApp.Infrastructure.Data.Infrastructre;
+using CarSimulatorApp.Infrastructure.Data.Infrastructure;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +18,9 @@ namespace CarSimulatorApp
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseLazyLoadingProxies()
+                .UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -32,13 +35,16 @@ namespace CarSimulatorApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-    
+
+            builder.Services.AddTransient<ICategoryService, CategoryService>();
+            builder.Services.AddTransient<IBrandService, BrandService>();
+
             var app = builder.Build();
             app.PrepareDatabase();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseMigrationsEndPoint();
+                app.UseMigrationsEndPoint();    
             }
             else
             {
