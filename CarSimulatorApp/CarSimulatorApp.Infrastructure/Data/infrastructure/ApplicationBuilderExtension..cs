@@ -11,14 +11,13 @@ using System.Threading.Tasks;
 using CarSimulatorApp.Infrastructure.Data.Domain;
 using CarSimulatorApp.Data;
 
-namespace CarSimulatorApp.Infrastructure.Data.Infrastructre
+namespace CarSimulatorApp.Infrastructure.Data.Infrastructure
 {
     public static class ApplicationBuilderExtension
     {
         public static async Task<IApplicationBuilder> PrepareDatabase(this IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
-
             var services = serviceScope.ServiceProvider;
 
             await RoleSeeder(services);
@@ -77,15 +76,13 @@ namespace CarSimulatorApp.Infrastructure.Data.Infrastructre
                 return;
             }
 
-            dataCategory.Categories.AddRange(new[]
+            dataCategory.Categories.AddRange(new[]      
             {
-                new Category { CategoryName = "Laptop" },
-                new Category { CategoryName = "Computer" },
-                new Category { CategoryName = "Monitor" },
-                new Category { CategoryName = "Accessory" },
-                new Category { CategoryName = "TV" },
-                new Category { CategoryName = "Mobile phone" },
-                new Category { CategoryName = "Smart watch" }
+                new Category { CategoryName = "SteeringWheel" },
+                new Category { CategoryName = "SteeringWheel Gearshift" },
+                new Category { CategoryName = "SteeringWheel Gearshift Pedals" },
+                new Category { CategoryName = "Pedals" },
+                new Category { CategoryName = "Handbrake" },
             });
 
             dataCategory.SaveChanges();
@@ -99,14 +96,14 @@ namespace CarSimulatorApp.Infrastructure.Data.Infrastructre
 
             dataBrand.Brands.AddRange(new[]
             {
-               new Brand { BrandName = "Acer" },
-               new Brand { BrandName = "Asus" },
-               new Brand { BrandName = "Apple" },
-               new Brand { BrandName = "Dell" },
-               new Brand { BrandName = "HP" },
-               new Brand { BrandName = "Huawei" },
-               new Brand { BrandName = "Lenovo" },
-               new Brand { BrandName = "Samsung" }
+               new Brand { BrandName = "Logitech" },
+               new Brand { BrandName = "Thrustmaster" },
+               new Brand { BrandName = "Fanatec" },
+               new Brand { BrandName = "Moza Racing" },
+               new Brand { BrandName = "Simagic" },
+               new Brand { BrandName = "Heusinkveld" },
+               new Brand { BrandName = "Simucube / Cube Controls" },
+               new Brand { BrandName = "PXN" }
             });
 
             dataBrand.SaveChanges();
