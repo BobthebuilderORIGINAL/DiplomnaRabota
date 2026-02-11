@@ -38,7 +38,12 @@ namespace CarSimulatorApp
 
             builder.Services.AddTransient<ICategoryService, CategoryService>();
             builder.Services.AddTransient<IBrandService, BrandService>();
+            builder.Services.AddTransient<IProductService, ProductService>();
+            //builder.Services.AddTransient<IOrderService, OrderService>();
+            //builder.Services.AddTransient<IStatisticsService, StatisticsService>();
 
+
+            
             var app = builder.Build();
             app.PrepareDatabase();
             // Configure the HTTP request pipeline.
