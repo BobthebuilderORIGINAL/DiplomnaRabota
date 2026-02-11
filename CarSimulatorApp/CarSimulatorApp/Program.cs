@@ -39,7 +39,7 @@ namespace CarSimulatorApp
             builder.Services.AddTransient<ICategoryService, CategoryService>();
             builder.Services.AddTransient<IBrandService, BrandService>();
             builder.Services.AddTransient<IProductService, ProductService>();
-            //builder.Services.AddTransient<IOrderService, OrderService>();
+            builder.Services.AddTransient<IOrderService, OrderService>();
             //builder.Services.AddTransient<IStatisticsService, StatisticsService>();
 
 
