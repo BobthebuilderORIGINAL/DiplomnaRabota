@@ -28,7 +28,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
                         
-                    </ul>
+                   
                     @if (this.User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
@@ -49,6 +49,7 @@
                             </ul>
                         </li>
                     }
+                    </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
