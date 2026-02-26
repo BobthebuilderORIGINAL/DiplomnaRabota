@@ -78,7 +78,12 @@
                     @*@Html.DisplayFor(modelItem => item.Pictute)*@
                 </td>
                 <td>
+                    @if(item.Quantity > 0){
                     @Html.DisplayFor(modelItem => item.Quantity)
+                    }
+                    else{
+                        @Html.Label("(Out of Inventory)")
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
@@ -92,8 +97,16 @@
 
                     @if (this.User.Identity.IsAuthenticated)
                     {
-                    <a asp-action="Create" asp-controller="Order" asp-route-id="@item.Id" class="btn btn-warning">Order</a>
+                        @if (item.Quantity > 0)
+                        {
+                            <a asp-action="Create" asp-controller="Order" asp-route-id="@item.Id" class="btn btn-warning">Order</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Create" asp-controller="Order" asp-route-id="@item.Id" class="btn btn-secondary disabled">Order</a>
+                        }
                     }
+                   
                     @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Administrator")))
                     {
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
