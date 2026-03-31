@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using CarSimulatorApp.Data;
+using Microsoft.AspNetCore.Identity;
 using CarSimulatorApp.Core.Contracts;
 using CarSimulatorApp.Infrastructure.Data.Domain;
 using CarSimulatorApp.Models.Brand;
@@ -17,12 +18,15 @@ namespace CarSimulatorApp.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
-
-        public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService)
+        private readonly ApplicationDbContext _db;                    
+        private readonly UserManager<ApplicationUser> _userManager;  
+        public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService,ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
             this._productService = productService;
             this._categoryService = categoryService;
             this._brandService = brandService;
+            this._db = db;             
+            this._userManager = userManager; 
         }
 
 
@@ -44,6 +48,18 @@ namespace CarSimulatorApp.Controllers
                     Price = product.Price,
                     Discount = product.Discount
                 }).ToList();
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(User);
+                ViewBag.FavouriteIds = _db.Favourites
+                    .Where(f => f.UserId == userId)
+                    .Select(f => f.ProductId)
+                    .ToList();
+            }
+            else
+            {
+                ViewBag.FavouriteIds = new List<int>();
+            }
 
             return this.View(products);
         }
@@ -214,6 +230,6 @@ namespace CarSimulatorApp.Controllers
         public IActionResult Success()
         {
             return View();
-        }
+        }   
     }
 }
