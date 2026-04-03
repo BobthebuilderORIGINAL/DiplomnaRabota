@@ -1,65 +1,275 @@
 ﻿@model IEnumerable<CarSimulatorApp.Models.Order.OrderIndexVM>
-
 @{
     ViewData["Title"] = "My Orders";
 }
 
-<h1>My Orders</h1>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Picture)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Discount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+<style>
+    body, main, .container {
+        background: #0f0f13 !important;
+        color: #f0f0f5;
+        font-family: 'DM Sans', sans-serif;
+    }
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product)
-                </td>
-                <td>
-                    <img src="@Html.DisplayFor(modelItem => item.Picture)" alt="Image" width="100" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Discount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-            </tr>
+    .orders-wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .orders-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #ff2222;
+    }
+
+    .orders-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+    .orders-title span { color: #ff2222; }
+
+    .orders-count {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #7a7a8c;
+    }
+
+    /* Orders Grid */
+    .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .order-card {
+        background: #18181f;
+        border: 1px solid #2e2e3a;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: transform 0.25s ease, border-color 0.25s ease;
+        overflow: hidden;
+    }
+
+    .order-card:hover {
+        transform: translateY(-4px);
+        border-color: #ff2222;
+        box-shadow: 0 12px 40px rgba(255, 34, 34, 0.08);
+    }
+
+    .order-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ff2222, #ff6b35);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .order-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .order-img-wrap {
+        width: 100%;
+        height: 160px;
+        overflow: hidden;
+        background: #22222c;
+    }
+
+    .order-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        display: block;
+    }
+
+    .order-card:hover .order-img-wrap img {
+        transform: scale(1.05);
+    }
+
+    .order-body {
+        padding: 1.1rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        flex: 1;
+    }
+
+    .order-product {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+    .order-date {
+        font-size: 0.75rem;
+        color: #7a7a8c;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .order-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+    .stat-item {
+        background: #22222c;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #2e2e3a;
+    }
+
+    .stat-label {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #7a7a8c;
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #f0f0f5;
+    }
+
+    .stat-value.total {
+        color: #ff2222;
+        font-size: 1.05rem;
+    }
+
+    .stat-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: #7a7a8c;
+    }
+
+    .empty-state h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #f0f0f5;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.4;
+    }
+
+    .shop-btn {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: #ff2222;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.75rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin-top: 1.5rem;
+    }
+
+    .shop-btn:hover {
+        background: #ff4444;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .orders-grid {
+            grid-template-columns: 1fr;
         }
-    </tbody>
-</table>
+        .orders-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="orders-wrap">
+    <div class="orders-header">
+        <h1 class="orders-title">My <span>Orders</span></h1>
+        <span class="orders-count">@Model.Count() order@(Model.Count() != 1 ? "s" : "")</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>No orders yet</h3>
+            <p>You haven't placed any orders. Browse our products and get started!</p>
+            <a asp-controller="Product" asp-action="Index" class="shop-btn">Shop Now →</a>
+        </div>
+    }
+    else
+    {
+        <div class="orders-grid">
+            @foreach (var item in Model)
+            {
+                <div class="order-card">
+                    <div class="order-img-wrap">
+                        <img src="@Html.DisplayFor(modelItem => item.Picture)" alt="@item.Product" />
+                    </div>
+                    <div class="order-body">
+                        <p class="order-product">@Html.DisplayFor(modelItem => item.Product)</p>
+                        <span class="order-date">📅 @Html.DisplayFor(modelItem => item.OrderDate)</span>
+                        <div class="order-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Quantity</span>
+                                <span class="stat-value">@Html.DisplayFor(modelItem => item.Quantity)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Discount</span>
+                                <span class="stat-value">@Html.DisplayFor(modelItem => item.Discount)%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Price</span>
+                                <span class="stat-value">$@Html.DisplayFor(modelItem => item.Price)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Total</span>
+                                <span class="stat-value total">$@Html.DisplayFor(modelItem => item.TotalPrice)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

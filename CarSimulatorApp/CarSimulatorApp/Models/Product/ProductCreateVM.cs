@@ -37,5 +37,9 @@ namespace CarSimulatorApp.Models.Product
 
         [Display(Name = "Discount")]
         public decimal Discount { get; set; }
+
+        [MaxLength(500)]
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
     }
 }

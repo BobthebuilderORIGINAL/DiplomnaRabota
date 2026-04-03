@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<CarSimulatorApp.Models.Product.ProductIndexVM>
 @{
-    ViewData["Title"] = "Productx`";
+    ViewData["Title"] = "Product";
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -292,6 +292,7 @@
         flex-direction: column;
         flex: 1;
         gap: 0.5rem;
+        overflow: hidden;
     }
 
     .card-meta {
@@ -328,6 +329,7 @@
         align-items: baseline;
         gap: 0.6rem;
         margin-top: 0.25rem;
+        flex-wrap: wrap;
     }
 
     .price {
