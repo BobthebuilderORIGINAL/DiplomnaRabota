@@ -46,20 +46,32 @@ namespace CarSimulatorApp.Controllers
                     Picture = product.Picture,
                     Quantity = product.Quantity,
                     Price = product.Price,
-                    Discount = product.Discount
+                    Discount = product.Discount,
+                    Description = product.Description
+
                 }).ToList();
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userManager.GetUserId(User);
-                ViewBag.FavouriteIds = _db.Favourites
+                var favIds = _db.Favourites
                     .Where(f => f.UserId == userId)
                     .Select(f => f.ProductId)
+                    .ToList();
+
+                ViewBag.FavouriteIds = favIds;
+
+                products = products
+                    .OrderByDescending(p => favIds.Contains(p.Id))
                     .ToList();
             }
             else
             {
                 ViewBag.FavouriteIds = new List<int>();
             }
+            ViewBag.Brands = _brandService.GetBrands()
+            .Select(b => b.BrandName).ToList();
+            ViewBag.Categories = _categoryService.GetCategories()
+                .Select(c => c.CategoryName).ToList();
 
             return this.View(products);
         }
@@ -84,7 +96,8 @@ namespace CarSimulatorApp.Controllers
                 Picture = item.Picture,
                 Quantity = item.Quantity,
                 Price = item.Price,
-                Discount = item.Discount
+                Discount = item.Discount,
+                Description = item.Description
             };
             return View(product);
         }
@@ -117,8 +130,8 @@ namespace CarSimulatorApp.Controllers
             if (ModelState.IsValid)
             {
                 var createId = _productService.Create(product.ProductName, product.BrandId,
-                    product.CategoryId, product.Picture,
-                    product.Quantity, product.Price, product.Discount);
+               product.CategoryId, product.Picture,
+                product.Quantity, product.Price, product.Discount, product.Description);
                 if (createId)
                 {
                     return RedirectToAction(nameof(Index));
@@ -144,7 +157,8 @@ namespace CarSimulatorApp.Controllers
                 Picture = product.Picture,
                 Quantity = product.Quantity,
                 Price = product.Price,
-                Discount = product.Discount
+                Discount = product.Discount,
+                Description = product.Description
 
             };
             updatedProduct.Brands = _brandService.GetBrands()
@@ -173,8 +187,8 @@ namespace CarSimulatorApp.Controllers
                 if (ModelState.IsValid)
                 {
                     var updated = _productService.Update(id, product.ProductName,
-                        product.BrandId, product.CategoryId, product.Picture,
-                        product.Quantity, product.Price, product.Discount);
+                     product.BrandId, product.CategoryId, product.Picture,
+                     product.Quantity, product.Price, product.Discount, product.Description);
 
                     if (updated)
                     {

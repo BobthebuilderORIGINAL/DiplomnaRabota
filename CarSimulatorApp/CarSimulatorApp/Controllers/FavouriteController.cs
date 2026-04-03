@@ -54,17 +54,12 @@ namespace CarSimulatorApp.Controllers
             }
             else
             {
-                _db.Favourites.Add(new Favourites
-                {
-                    UserId = userId,
-                    ProductId = productId
-                });
+                _db.Favourites.Add(new Favourites { UserId = userId, ProductId = productId });
                 isFavourited = true;
             }
 
             await _db.SaveChangesAsync();
-
-            return RedirectToAction("Index", "Product");
+            return Json(new { isFavourited });
         }
 
         // POST: /Favourite/Remove/5

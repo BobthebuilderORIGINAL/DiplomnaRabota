@@ -23,6 +23,9 @@ namespace CarSimulatorApp.Infrastructure.Data.Domain
         public virtual Category Category { get; set; } = null!;
         public string Picture { get; set; } = null!;
 
+        [MaxLength(500)]
+        public string Description { get; set; }
+
         [Range(0, 5000)]
         public int Quantity { get; set; }
         public decimal Price { get; set; }

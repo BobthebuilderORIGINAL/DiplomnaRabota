@@ -2,71 +2,299 @@
 @{
     ViewData["Title"] = "Details";
 }
-<h1>Details</h1>
-<div>
-    <h4>ProductDetailsVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BrandName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BrandName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Picture)
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Html.DisplayFor(model => model.Picture)" alt="Image"
-                 width="100" />
-            @*@Html.DisplayFor(model => model.Picture)*@
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Discount)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Discount)
 
-            
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-        </dd>
-    </dl>
-</div>
-<div>
-    @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Administrator")))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit |</a> 
-
+<style>
+    body, main, .container {
+        background: #0f0f13 !important;
+        color: #f0f0f5;
+        font-family: 'DM Sans', sans-serif;
     }
-    
-    <a asp-action="Index">Back to List</a>
+
+    .details-wrap {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .details-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #ff2222;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .details-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+    .details-title span { color: #ff2222; }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    /* Left - Image */
+    .details-img-wrap {
+        width: 100%;
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        background: #18181f;
+        border: 1px solid #2e2e3a;
+        position: relative;
+    }
+
+    .details-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .stock-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        font-family: 'Syne', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        padding: 0.3rem 0.75rem;
+    }
+
+    .in-stock { background: #39d98a; color: #0f0f13; }
+    .out-stock { background: #ff4d6d; color: #fff; }
+
+    /* Right - Info */
+    .details-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .details-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 0.25rem 0.65rem;
+        border: 1px solid #2e2e3a;
+        color: #7a7a8c;
+    }
+
+    .tag.brand { border-color: rgba(255,34,34,0.4); color: #ff2222; }
+
+    .details-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #f0f0f5;
+        letter-spacing: -0.02em;
+        margin: 0;
+    }
+
+    .details-price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .price-original {
+        font-size: 1rem;
+        color: #7a7a8c;
+        text-decoration: line-through;
+    }
+
+    .price-final {
+        font-family: 'Syne', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #e8ff47;
+    }
+
+    .price-discount {
+        font-size: 0.85rem;
+        color: #ff6b35;
+        font-weight: 600;
+    }
+
+    .details-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-box {
+        background: #18181f;
+        border: 1px solid #2e2e3a;
+        padding: 0.75rem 1rem;
+    }
+
+    .stat-label {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #7a7a8c;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #f0f0f5;
+    }
+
+    /* Actions */
+    .details-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .btn-action {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border: 1px solid;
+        transition: all 0.18s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-order {
+        background: #ff2222;
+        border-color: #ff2222;
+        color: #fff;
+    }
+    .btn-order:hover { background: #ff4444; color: #fff; border-color: #ff4444; }
+
+    .btn-edit {
+        background: transparent;
+        border-color: #ffb830;
+        color: #ffb830;
+    }
+    .btn-edit:hover { background: #ffb830; color: #0f0f13; }
+
+    .btn-back {
+        background: transparent;
+        border-color: #2e2e3a;
+        color: #7a7a8c;
+    }
+    .btn-back:hover { border-color: #ff2222; color: #ff2222; }
+
+    @@media (max-width: 768px) {
+        .details-grid { grid-template-columns: 1fr; }
+        .details-header { flex-direction: column; align-items: flex-start; }
+    }
+</style>
+
+<div class="details-wrap">
+    <div class="details-header">
+        <h1 class="details-title">Product <span>Details</span></h1>
+        <a asp-action="Index" class="btn-action btn-back">← Back to Products</a>
+    </div>
+
+    <div class="details-grid">
+        <!-- Image -->
+        <div class="details-img-wrap">
+            <img src="@Html.DisplayFor(model => model.Picture)" alt="@Model.ProductName" />
+            @if (Model.Quantity > 0)
+            {
+                <span class="stock-badge in-stock">In Stock</span>
+            }
+            else
+            {
+                <span class="stock-badge out-stock">Out of Stock</span>
+            }
+        </div>
+
+        <!-- Info -->
+        <div class="details-info">
+            <div class="details-tags">
+                <span class="tag brand">@Html.DisplayFor(model => model.BrandName)</span>
+                <span class="tag">@Html.DisplayFor(model => model.CategoryName)</span>
+            </div>
+
+            <h2 class="details-name">@Html.DisplayFor(model => model.ProductName)</h2>
+
+            <div class="details-price-row">
+                @if (Model.Discount > 0)
+                {
+                    decimal discounted = Model.Price - (Model.Price * Model.Discount / 100);
+                    <span class="price-original">$@Model.Price.ToString("F2")</span>
+                    <span class="price-final">$@discounted.ToString("F2")</span>
+                    <span class="price-discount">-@Model.Discount%</span>
+                }
+                else
+                {
+                    <span class="price-final">$@Model.Price.ToString("F2")</span>
+                }
+            </div>
+
+            <div class="details-stats">
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="stat-box" style="grid-column: 1/-1;">
+                        <span class="stat-label">Description</span>
+                        <p style="color:#a0a0b0; font-size:0.9rem; margin:0; line-height:1.7;">@Model.Description</p>
+                    </div>
+                }
+                <div class="stat-box">
+                    <span class="stat-label">Quantity</span>
+                    <span class="stat-value">@Html.DisplayFor(model => model.Quantity)</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Discount</span>
+                    <span class="stat-value">@Html.DisplayFor(model => model.Discount)%</span>
+                </div>
+            </div>
+
+            <div class="details-actions">
+                @if (this.User.Identity.IsAuthenticated && Model.Quantity > 0)
+                {
+                    <a asp-action="Create" asp-controller="Order" asp-route-id="@Model.Id" class="btn-action btn-order">Order Now</a>
+                }
+                @if ((this.User.Identity.IsAuthenticated) && (this.User.IsInRole("Administrator")))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-action btn-edit">Edit</a>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

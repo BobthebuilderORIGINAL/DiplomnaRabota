@@ -16,6 +16,21 @@
         font-weight: 800;
     }
 
+    select.filter-input {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ff2222' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        padding-right: 2rem;
+    }
+
+        select.filter-input option {
+            background: #18181f;
+            color: #f0f0f5;
+        }
+
 
     .btn-details {
         border-color: #e8ff47 !important;
@@ -442,19 +457,38 @@
     </div>
 
     <form asp-controller="Product" asp-action="Index" method="get">
-        <div class="filter-bar">
-            <span class="filter-label">Filter</span>
-            <span class="filter-label" style="color:var(--text)">Brand:</span>
-            <input class="filter-input" type="text" name="SearchStringBrandName" placeholder="" />
-            <span class="filter-label" style="color:var(--text)">Category:</span>
-            <input class="filter-input" type="text" name="SearchStringCategoryName" placeholder="" />
-            <button class="filter-submit" type="submit">Apply</button>
-        </div>
-    </form>
+    <div class="filter-bar">
+        <span class="filter-label">Filter</span>
+        <span class="filter-label" style="color:var(--text)">Brand:</span>
+        <select class="filter-input" name="searchStringBrandName">
+            <option value="">All Brands</option>
+            @foreach (var brand in ViewBag.Brands as List<string> ?? new List<string>())
+            {
+                    
+                        var selectedBrand = brand == Context.Request.Query["searchStringBrandName"].ToString() ? "selected" : null;
+                        <option value="@brand" selected="@selectedBrand">@brand</option>
+                    
+            }
+        </select>
+        <span class="filter-label" style="color:var(--text)">Category:</span>
+        <select class="filter-input" name="searchStringCategoryName">
+            <option value="">All Categories</option>
+            @foreach (var cat in ViewBag.Categories as List<string> ?? new List<string>())
+            {
+                    
+                        var selectedCat = cat == Context.Request.Query["searchStringCategoryName"].ToString() ? "selected" : null;
+                        <option value="@cat" selected="@selectedCat">@cat</option>
+                    
+            }
+        </select>
+        <button class="filter-submit" type="submit">Apply</button>
+    </div>
+</form>
     @{
         var favIds = ViewBag.FavouriteIds as List<int> ?? new List<int>();
     }
     <div class="products-grid">
+        @Html.AntiForgeryToken()
         @foreach (var item in Model)
         {
             <div class="product-card">
@@ -463,17 +497,13 @@
                 @if (this.User.Identity.IsAuthenticated)
                 {
                     bool isFav = favIds.Contains(item.Id);
-                    <form asp-controller="Favourite" asp-action="Toggle" method="post"
-                          style="position:absolute;top:10px;right:10px;z-index:10;">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="productId" value="@item.Id" />
-                        <button type="submit" class="fav-btn @(isFav ? "active" : "")"
-                                title="@(isFav ? "Remove from favourites" : "Add to favourites")">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                            </svg>
-                        </button>
-                    </form>
+                    <button class="fav-btn @(isFav ? "active" : "")"
+                            onclick="toggleFav(this, @item.Id)"
+                            title="@(isFav ? "Remove from favourites" : "Add to favourites")">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                    </button>
                 }
 
                 <!-- Image -->
@@ -549,41 +579,32 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        // Load favourites from localStorage
-        const FAV_KEY = 'product_favourites';
-        function getFavs() {
-            try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; }
-        }
-        function saveFavs(favs) {
-            localStorage.setItem(FAV_KEY, JSON.stringify(favs));
-        }
-
         function toggleFav(btn, productId) {
-            let favs = getFavs();
-            const idx = favs.indexOf(productId);
-            if (idx === -1) {
-                favs.push(productId);
-                btn.classList.add('active');
-                btn.title = 'Remove from favourites';
-            } else {
-                favs.splice(idx, 1);
-                btn.classList.remove('active');
-                btn.title = 'Add to favourites';
-            }
-            saveFavs(favs);
-        }
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-        // On page load, restore fav states
-        document.addEventListener('DOMContentLoaded', () => {
-            const favs = getFavs();
-            document.querySelectorAll('.fav-btn').forEach(btn => {
-                const id = btn.getAttribute('onclick').match(/'([^']+)'/g)?.[1]?.replace(/'/g,'');
-                if (id && favs.includes(id)) {
-                    btn.classList.add('active');
-                    btn.title = 'Remove from favourites';
-                }
-            });
-        });
+            fetch('/Favourite/Toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: `productId=${productId}&__RequestVerificationToken=${encodeURIComponent(token)}`
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.isFavourited) {
+                        btn.classList.add('active');
+                        btn.title = 'Remove from favourites';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.title = 'Add to favourites';
+                    }
+                })
+                .catch(err => console.error('Favourite error:', err));
+        }
     </script>
 }
 

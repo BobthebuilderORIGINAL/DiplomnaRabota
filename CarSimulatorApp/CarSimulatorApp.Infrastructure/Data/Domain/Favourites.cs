@@ -14,18 +14,17 @@ namespace CarSimulatorApp.Infrastructure.Data.Domain
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey(nameof(User))]
         public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; } = null!;
 
         [Required]
+        [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
+        public virtual Product Product { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
-        [ForeignKey(nameof(UserId))]
-        public virtual ApplicationUser User { get; set; }
-
-        [ForeignKey(nameof(ProductId))]
-        public virtual Product Product { get; set; }
+       
     }
 }

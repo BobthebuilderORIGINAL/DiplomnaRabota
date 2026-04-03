@@ -16,6 +16,8 @@ namespace CarSimulatorApp.Models.Product
         public string BrandName { get; set; } = null!;
 
         public int CategoryId { get; set; }
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
 
         [Display(Name = "Category")]
         public string CategoryName { get; set; } = null!;

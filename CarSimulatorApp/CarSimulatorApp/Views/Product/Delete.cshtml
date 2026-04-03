@@ -2,65 +2,262 @@
 @{
     ViewData["Title"] = "Delete";
 }
-<h1>Delete</h1>
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>ProductDeleteVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BrandName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BrandName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Picture)
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Html.DisplayFor(model => model.Picture)" alt="Image"
-                 width="100" />
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Discount)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Discount)
-        </dd>
-    </dl>
 
-    
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<style>
+    body, main, .container {
+        background: #0f0f13 !important;
+        color: #f0f0f5;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .delete-wrap {
+        max-width: 780px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .delete-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #ff2222;
+    }
+
+    .delete-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+        .delete-title span {
+            color: #ff2222;
+        }
+
+    .delete-warning {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #ff4d6d;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    /* Card */
+    .delete-card {
+        background: #18181f;
+        border: 1px solid #ff2222;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        overflow: hidden;
+    }
+
+    .delete-img {
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .delete-info {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .delete-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 0.25rem 0.65rem;
+        border: 1px solid #2e2e3a;
+        color: #7a7a8c;
+    }
+
+        .tag.brand {
+            border-color: rgba(255,34,34,0.4);
+            color: #ff2222;
+        }
+
+    .delete-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #f0f0f5;
+        margin: 0;
+    }
+
+    .delete-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+
+    .stat-box {
+        background: #22222c;
+        border: 1px solid #2e2e3a;
+        padding: 0.6rem 0.85rem;
+    }
+
+    .stat-label {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #7a7a8c;
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #f0f0f5;
+    }
+
+    /* Confirm box */
+    .confirm-box {
+        margin-top: 2rem;
+        background: rgba(255, 34, 34, 0.06);
+        border: 1px solid rgba(255, 34, 34, 0.3);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .confirm-text {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #ff4d6d;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-delete {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: #ff2222;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .btn-delete:hover {
+            background: #ff4444;
+            transform: translateY(-2px);
+        }
+
+    .btn-back {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        background: transparent;
+        color: #7a7a8c;
+        border: 1px solid #2e2e3a;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .btn-back:hover {
+            border-color: #ff2222;
+            color: #ff2222;
+        }
+
+    @@media (max-width: 650px) {
+        .delete-card {
+            grid-template-columns: 1fr;
+        }
+
+        .delete-img {
+            height: 200px;
+            width: 100%;
+        }
+
+        .confirm-box {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="delete-wrap">
+    <div class="delete-header">
+        <h1 class="delete-title">Delete <span>Product</span></h1>
+        <p class="delete-warning">⚠ This action is permanent and cannot be undone.</p>
+    </div>
+
+    <div class="delete-card">
+        <img src="@Model.Picture" class="delete-img" alt="@Model.ProductName" />
+        <div class="delete-info">
+            <div class="delete-tags">
+                <span class="tag brand">@Model.BrandName</span>
+                <span class="tag">@Model.CategoryName</span>
+            </div>
+            <h2 class="delete-name">@Model.ProductName</h2>
+            <div class="delete-stats">
+                <div class="stat-box">
+                    <span class="stat-label">Price</span>
+                    <span class="stat-value">$@Model.Price.ToString("F2")</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Discount</span>
+                    <span class="stat-value">@Model.Discount%</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Quantity</span>
+                    <span class="stat-value">@Model.Quantity units</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirm-box">
+        <span class="confirm-text">⚠ Are you sure you want to delete "@Model.ProductName"?</span>
+        <div class="confirm-actions">
+            <form asp-action="Delete" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn-delete">Yes, Delete</button>
+            </form>
+            <a asp-action="Index" class="btn-back">← Cancel</a>
+        </div>
+    </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

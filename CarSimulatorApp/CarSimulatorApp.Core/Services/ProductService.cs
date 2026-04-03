@@ -20,7 +20,7 @@ namespace CarSimulatorApp.Core.Services
             _context = context;
         }
 
-        public bool Create(string name, int brandId, int categoryId, string picture, int quantity, decimal price, decimal discount)
+        public bool Create(string name, int brandId, int categoryId, string picture, int quantity, decimal price, decimal discount, string description)
         {
             Product item = new Product
             {
@@ -30,7 +30,8 @@ namespace CarSimulatorApp.Core.Services
                 Picture = picture,
                 Quantity = quantity,
                 Price = price,
-                Discount = discount
+                Discount = discount,
+                Description = description
             };
 
             _context.Products.Add(item);
@@ -76,7 +77,7 @@ namespace CarSimulatorApp.Core.Services
             _context.Remove(product);
             return _context.SaveChanges() != 0;
         }
-        public bool Update(int productId, string name, int brandId, int categoryId, string picture, int quantity, decimal price, decimal discount)
+        public bool Update(int productId, string name, int brandId, int categoryId, string picture, int quantity, decimal price, decimal discount, string description)
         {
             var product = GetProductById(productId);
             if (product == null)
@@ -91,6 +92,7 @@ namespace CarSimulatorApp.Core.Services
             product.Quantity = quantity;
             product.Price = price;
             product.Discount = discount;
+            product.Description = description;
 
             // If your Product entity has BrandId and CategoryId properties, you could use:
             // product.BrandId = brandId;
