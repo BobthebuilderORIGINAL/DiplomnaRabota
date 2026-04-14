@@ -1,4 +1,5 @@
-﻿using CarSimulatorApp.Data;
+﻿using CarSimulatorApp.Core.Contracts;
+using CarSimulatorApp.Data;
 using CarSimulatorApp.Infrastructure.Data;
 using CarSimulatorApp.Infrastructure.Data.Domain;
 
@@ -12,73 +13,41 @@ namespace CarSimulatorApp.Controllers
     [Authorize]
     public class FavouriteController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IFavouriteService _favouriteService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public FavouriteController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+        public FavouriteController(IFavouriteService favouriteService, UserManager<ApplicationUser> userManager)
         {
-            _db = db;
+            _favouriteService = favouriteService;
             _userManager = userManager;
         }
-
         // GET: /Favourite
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var userId = _userManager.GetUserId(User);
-
-            var favourites = await _db.Favourites
-                .Where(f => f.UserId == userId)
-                .Include(f => f.Product)
-                .OrderByDescending(f => f.CreatedAt)
-                .ToListAsync();
-
+            var favourites = _favouriteService.GetFavourites(userId);
             return View(favourites);
         }
 
         // POST: /Favourite/Toggle
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Toggle(int productId)
+        public IActionResult Toggle(int productId)
         {
             var userId = _userManager.GetUserId(User);
-
-            var existing = await _db.Favourites
-                .FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId);
-
-            bool isFavourited;
-
-            if (existing != null)
-            {
-                _db.Favourites.Remove(existing);
-                isFavourited = false;
-            }
-            else
-            {
-                _db.Favourites.Add(new Favourites { UserId = userId, ProductId = productId });
-                isFavourited = true;
-            }
-
-            await _db.SaveChangesAsync();
+            bool isFavourited = _favouriteService.Toggle(userId, productId);
             return Json(new { isFavourited });
         }
 
         // POST: /Favourite/Remove/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Remove(int id)
+        public IActionResult Remove(int id)
         {
             var userId = _userManager.GetUserId(User);
-
-            var fav = await _db.Favourites
-                .FirstOrDefaultAsync(f => f.Id == id && f.UserId == userId);
-
-            if (fav != null)
-            {
-                _db.Favourites.Remove(fav);
-                await _db.SaveChangesAsync();
-            }
-
+            _favouriteService.Remove(userId, id);
             return RedirectToAction(nameof(Index));
+
         }
     }
 }

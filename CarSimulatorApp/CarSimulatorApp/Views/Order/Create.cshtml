@@ -303,7 +303,7 @@
         </div>
 
         <!-- Right: Order Form -->
-        <form asp-action="Create" class="order-form">
+        <form asp-action="Create" asp-controller="Order" method="post" class="order-form">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -312,6 +312,7 @@
             <input type="hidden" asp-for="ProductName" />
             <input type="hidden" asp-for="Price" />
             <input type="hidden" asp-for="Discount" />
+            <input type="hidden" asp-for="QuantityInStock" />
 
             <div class="form-group">
                 <label class="form-label">Quantity</label>
@@ -338,18 +339,18 @@
 
 <script>
     function calcSum() {
-        let q = document.getElementsByName('Quantity')[0].value;
-        let p = @Model.Price;
-        let d = @Model.Discount;
+        let q = document.getElementById('Quantity').value;
+        let p = @Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        let d = @Model.Discount.ToString(System.Globalization.CultureInfo.InvariantCulture);
         let sum = Number(q) * (Number(p) - Number(p) * Number(d) / 100);
         document.getElementById('TotalPrice').value = sum.toFixed(2);
         document.getElementById('totalDisplay').textContent = '$' + sum.toFixed(2);
     }
 
+    document.getElementById('Quantity').addEventListener('input', calcSum);
     document.getElementById('Quantity').max = @Model.QuantityInStock;
     document.getElementById('Quantity').min = 1;
-
-    // Init total on load
+    document.getElementById('Quantity').value = 1;
     calcSum();
 </script>
 

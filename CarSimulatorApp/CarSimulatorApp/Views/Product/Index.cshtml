@@ -484,11 +484,12 @@
         <button class="filter-submit" type="submit">Apply</button>
     </div>
 </form>
-    @{
-        var favIds = ViewBag.FavouriteIds as List<int> ?? new List<int>();
-    }
+    
     <div class="products-grid">
         @Html.AntiForgeryToken()
+        @{
+            var favIds = ViewBag.FavouriteIds as List<int> ?? new List<int>();
+        }
         @foreach (var item in Model)
         {
             <div class="product-card">
@@ -498,13 +499,14 @@
                 {
                     bool isFav = favIds.Contains(item.Id);
                     <button class="fav-btn @(isFav ? "active" : "")"
-                            onclick="toggleFav(this, @item.Id)"
+                    onclick="toggleFav(this, @item.Id)"
                             title="@(isFav ? "Remove from favourites" : "Add to favourites")">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg>
                     </button>
                 }
+        
 
                 <!-- Image -->
                 <div class="card-img-wrap">
@@ -595,6 +597,7 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log('Response:', data);  // ADD THIS
                     if (data.isFavourited) {
                         btn.classList.add('active');
                         btn.title = 'Remove from favourites';

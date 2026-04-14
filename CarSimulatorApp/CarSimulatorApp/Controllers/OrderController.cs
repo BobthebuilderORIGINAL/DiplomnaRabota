@@ -112,21 +112,20 @@ namespace WebShopApp.Controllers
         public ActionResult Create(OrderCreateVM bindingModel)
         {
             string currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var product = this._productService.GetProductById(bindingModel.ProductId);
-            if (currentUserId == null || product == null || product.Quantity < bindingModel.Quantity ||
-                product.Quantity == 0)
+
+            if (currentUserId == null || product == null)
             {
-                // ако потребителят не съществува или продуктът не съществува или няма достатъчно наличност
                 return RedirectToAction("Denied", "Order");
             }
 
-            if (ModelState.IsValid)
+            if (product.Quantity < bindingModel.Quantity || product.Quantity == 0)
             {
-                _orderService.Create(bindingModel.ProductId, currentUserId, bindingModel.Quantity);
+                return RedirectToAction("Denied", "Order");
             }
 
-            // при успешна поръчка се връща в списъка на продуктите
+            _orderService.Create(bindingModel.ProductId, currentUserId, bindingModel.Quantity);
+
             return this.RedirectToAction("Index", "Product");
         }
 

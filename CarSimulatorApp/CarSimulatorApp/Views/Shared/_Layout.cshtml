@@ -17,6 +17,22 @@
         .nav-link:hover {
             color: #ff6666 !important;
         }
+
+    footer {
+        background: #0f0f13 !important;
+        border-top: 1px solid #ff2222 !important;
+        color: #7a7a8c !important;
+        padding: 1rem 0;
+    }
+
+        footer a {
+            color: #ff2222 !important;
+        }
+
+    .footer {
+        background: #0f0f13 !important;
+        color: #7a7a8c !important;
+    }
 </style>
 
 <head>
@@ -30,7 +46,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3" style="border-bottom: 2px solid #ff2222 !important;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="border-bottom: 2px solid #ff2222 !important; background: #0f0f13 !important;">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"
                    style="color: #ff2222 !important; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Bob The Driver
@@ -71,6 +87,7 @@
                             </ul>
                         </li>
                     }
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

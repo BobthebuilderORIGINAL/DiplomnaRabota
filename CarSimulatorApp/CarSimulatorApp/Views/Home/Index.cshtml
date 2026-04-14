@@ -6,53 +6,133 @@
 
 <style>
     body, main, .container {
-        background: #0f0f13 !important;
-        color: #f0f0f5;
-        font-family: 'DM Sans', sans-serif;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
     }
 
-    .welcome-section {
+    .navbar {
+        background: #0f0f13 !important;
+        border-bottom: 2px solid #ff2222 !important;
+    }
+
+    .border-bottom {
+        border-bottom: 2px solid #ff2222 !important;
+    }
+
+    .box-shadow {
+        box-shadow: none !important;
+    }
+    nav {
+        background: #0f0f13 !important;
+    }
+
+    main {
+        padding: 0 !important;
+    }
+
+    .hero {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        height: 100vh; /* full viewport height */
+        min-height: unset;
+        position: relative;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 70vh;
-        text-align: center;
-        gap: 1.5rem;
+        overflow: hidden;
+    }
+    .hero-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.6;
+        z-index: 0;
+    }
+    /* Dark overlay */
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1;
     }
 
-    .welcome-title {
+    /* Green Wave - Top */
+    .wave-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        line-height: 0;
+    }
+
+        .wave-top svg {
+            display: block;
+            width: 100%;
+        }
+
+    /* Green Wave - Bottom */
+    .wave-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        line-height: 0;
+    }
+
+        .wave-bottom svg {
+            display: block;
+            width: 100%;
+        }
+
+    /* Content */
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .hero-title {
         font-family: 'Syne', sans-serif;
-        font-size: clamp(3rem, 10vw, 7rem);
+        font-size: clamp(3.5rem, 10vw, 8rem);
         font-weight: 800;
         letter-spacing: -0.03em;
         line-height: 1;
         color: #f0f0f5;
-        margin: 0;
+        margin: 0 0 1.5rem;
+        text-shadow: 0 0 60px rgba(0,0,0,0.8);
     }
 
-    .welcome-title span {
-        color: #ff2222;
+        .hero-title span {
+            color: #ff2222;
+        }
+
+    .hero-sub {
+        font-size: 1.05rem;
+        color: #a0a0b0;
+        max-width: 480px;
+        margin: 0 auto 2rem;
+        line-height: 1.7;
     }
 
-    .welcome-sub {
-        font-size: 1.1rem;
-        color: #7a7a8c;
-        max-width: 500px;
-    }
+        .hero-sub a {
+            color: #39d98a;
+            text-decoration: none;
+            border-bottom: 1px solid #39d98a;
+        }
 
-    .welcome-sub a {
-        color: #ff2222;
-        text-decoration: none;
-        border-bottom: 1px solid #ff2222;
-    }
+            .hero-sub a:hover {
+                color: #5fffa8;
+                border-color: #5fffa8;
+            }
 
-    .welcome-sub a:hover {
-        color: #ff6666;
-        border-color: #ff6666;
-    }
-
-    .welcome-btn {
+    .hero-btn {
         font-family: 'Syne', sans-serif;
         font-weight: 700;
         font-size: 0.85rem;
@@ -61,25 +141,118 @@
         background: #ff2222;
         color: #fff;
         border: none;
-        padding: 0.85rem 2rem;
+        padding: 1rem 2.5rem;
         text-decoration: none;
         transition: all 0.2s ease;
         display: inline-block;
-        margin-top: 1rem;
     }
 
-    .welcome-btn:hover {
-        background: #ff4444;
-        color: #fff;
-        transform: translateY(-2px);
+        .hero-btn:hover {
+            background: #ff4444;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 34, 34, 0.4);
+        }
+
+    /* Video selector dots */
+    .video-dots {
+        position: absolute;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 4;
+        display: flex;
+        gap: 0.6rem;
+    }
+
+    .video-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        padding: 0;
+    }
+
+        .video-dot.active {
+            background: #39d98a;
+            box-shadow: 0 0 8px rgba(57, 217, 138, 0.6);
+        }
+
+    @@media (max-width: 576px) {
+        .hero-title {
+            font-size: 3rem;
+        }
     }
 </style>
 
-<div class="welcome-section">
-    <h1 class="welcome-title">Bob The <span>Driver</span></h1>
-    <p class="welcome-sub">
-        Your one-stop shop for car simulator gear. <br/>
-        <a asp-controller="Product" asp-action="Index">Browse our products</a> and find your perfect setup.
-    </p>
-    <a asp-controller="Product" asp-action="Index" class="welcome-btn">Shop Now →</a>
+<div class="hero">
+
+    <!-- Video Background -->
+    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline>
+        <source src="/videos/video1.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+    
+    
+
+    <!-- Content -->
+    <div class="hero-content">
+        <h1 class="hero-title">Bob The <span>Driver</span></h1>
+        <p class="hero-sub">
+            Your one-stop shop for car simulator gear.<br />
+            <a asp-controller="Product" asp-action="Index">Browse our products</a> and find your perfect setup.
+        </p>
+        <a asp-controller="Product" asp-action="Index" class="hero-btn">Shop Now →</a>
+    </div>
+
+   
+
+    <!-- Video dots -->
+    <div class="video-dots">
+        <button class="video-dot active" onclick="switchVideo(0)" id="dot0"></button>
+        <button class="video-dot" onclick="switchVideo(1)" id="dot1"></button>
+    </div>
+
 </div>
+
+<script>
+    const videos = [
+        "/videos/video1.mp4",
+        "/videos/video2.mp4"
+    ];
+
+    // Pick random video on page load
+    let currentVideo = Math.floor(Math.random() * videos.length);
+    const videoEl = document.getElementById('heroVideo');
+    videoEl.src = videos[currentVideo];
+    videoEl.play();
+
+    // Update dots
+    document.querySelectorAll('.video-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentVideo);
+    });
+
+    // Auto advance when video ends
+    videoEl.addEventListener('ended', function () {
+        currentVideo = (currentVideo + 1) % videos.length;
+        videoEl.src = videos[currentVideo];
+        videoEl.play();
+        document.querySelectorAll('.video-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentVideo);
+        });
+    });
+
+    function switchVideo(index) {
+        currentVideo = index;
+        videoEl.src = videos[index];
+        videoEl.play();
+        document.querySelectorAll('.video-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    }
+</script>

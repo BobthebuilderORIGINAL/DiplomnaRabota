@@ -10,6 +10,7 @@ using CarSimulatorApp.Core.Contracts;
 using CarSimulatorApp.Infrastructure.Data;
 using CarSimulatorApp.Infrastructure.Data.Domain;
 using CarSimulatorApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSimulatorApp.Core.Services
 {
@@ -25,16 +26,11 @@ namespace CarSimulatorApp.Core.Services
         }
         public bool Create(int productId, string userId, int quantity)
         {
-            //намираме продукта по неговото id
-            var product = this._context.Products.SingleOrDefault(x => x.Id == productId);
+            var product = _context.Products
+                .FirstOrDefault(x => x.Id == productId);
 
-            //проверяваме дали има такъв продукт
-            if (product == null)
-            {
-                return false;
-            }
+            if (product == null) return false;
 
-            //създаване на поръчка
             Order item = new Order
             {
                 OrderDate = DateTime.Now,
@@ -45,14 +41,11 @@ namespace CarSimulatorApp.Core.Services
                 Discount = product.Discount
             };
 
-            //намаляване на количеството на продукта
             product.Quantity -= quantity;
 
-            //отразяване на промените в колекциите
-            this._context.Products.Update(product);
-            this._context.Orders.Add(item);
+            _context.Products.Update(product);
+            _context.Orders.Add(item);
 
-            //запис на промените в БД
             return _context.SaveChanges() != 0;
         }
 
@@ -63,15 +56,22 @@ namespace CarSimulatorApp.Core.Services
 
         public List<Order> GetOrders()
         {
-            return _context.Orders.OrderByDescending(x => x.OrderDate).ToList();
+            return _context.Orders
+                .Include(x => x.Product)
+                .Include(x => x.User)
+                .OrderByDescending(x => x.OrderDate)
+                .ToList();
         }
+
 
         public List<Order> GetOrdersByUser(string userId)
         {
             return _context.Orders
-             .Where(x => x.UserId == userId)           // филтрира само поръчките на този потребител
-             .OrderByDescending(x => x.OrderDate)      // подрежда ги по дата на поръчката, от най-новата напред
-              .ToList();                                // превръща резултата в List<Order>
+                .Where(x => x.UserId == userId)
+                .Include(x => x.Product)
+                .Include(x => x.User)
+                .OrderByDescending(x => x.OrderDate)
+                .ToList();
         }
 
         public bool RemoveById(int orderId)
@@ -82,6 +82,10 @@ namespace CarSimulatorApp.Core.Services
         public bool Update(int orderId, int productId, string userId, int quantity)
         {
             throw new NotImplementedException();
+        }
+        public bool UserHasOrders(string userId)
+        {
+            return _context.Orders.Any(o => o.UserId == userId);
         }
     }
 }

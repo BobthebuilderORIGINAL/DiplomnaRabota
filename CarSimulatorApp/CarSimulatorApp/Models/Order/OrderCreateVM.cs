@@ -13,8 +13,9 @@ namespace CarSimulatorApp.Models.Order
         public int QuantityInStock { get; set; }
         public string Picture { get; set; }
 
-        [Range(1, 100)]
+        [Range(1, 5000)]
         public int Quantity { get; set; }
+
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public decimal TotalPrice { get; set; }

@@ -17,17 +17,21 @@ namespace CarSimulatorApp.Controllers
 
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        private readonly IBrandService _brandService;
-        private readonly ApplicationDbContext _db;                    
-        private readonly UserManager<ApplicationUser> _userManager;  
-        public ProductController(IProductService productService, ICategoryService categoryService, IBrandService brandService,ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+        private readonly IBrandService _brandService;                   
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFavouriteService _favouriteService;
+
+        public ProductController(IProductService productService, ICategoryService categoryService,
+            IBrandService brandService, IFavouriteService favouriteService,
+            UserManager<ApplicationUser> userManager)
         {
-            this._productService = productService;
-            this._categoryService = categoryService;
-            this._brandService = brandService;
-            this._db = db;             
-            this._userManager = userManager; 
+            _productService = productService;
+            _categoryService = categoryService;
+            _brandService = brandService;
+            _favouriteService = favouriteService;
+            _userManager = userManager;
         }
+
 
 
         // GET: ProductController
@@ -53,13 +57,8 @@ namespace CarSimulatorApp.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userManager.GetUserId(User);
-                var favIds = _db.Favourites
-                    .Where(f => f.UserId == userId)
-                    .Select(f => f.ProductId)
-                    .ToList();
-
+                var favIds = _favouriteService.GetFavouriteIds(userId);
                 ViewBag.FavouriteIds = favIds;
-
                 products = products
                     .OrderByDescending(p => favIds.Contains(p.Id))
                     .ToList();

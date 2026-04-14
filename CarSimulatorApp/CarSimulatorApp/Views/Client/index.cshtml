@@ -51,5 +51,17 @@
                 </td>
             </tr>
         }
+        @if (TempData["Error"] != null)
+        {
+            <div style="background: rgba(255,34,34,0.1);
+                border: 1px solid #ff2222;
+                color: #ff4d6d;
+                padding: 0.75rem 1.25rem;
+                font-family: 'Syne', sans-serif;
+                font-size: 0.85rem;
+                margin-bottom: 1.5rem;">
+                ⚠ @TempData["Error"]
+            </div>
+        }
     </tbody>
 </table>

@@ -5,16 +5,18 @@ using Microsoft.Identity.Client;
 
 using CarSimulatorApp.Infrastructure.Data.Domain;
 using CarSimulatorApp.Models.Client;
+using CarSimulatorApp.Core.Contracts;
 
 namespace CarSimulatorApp.Controllers
 {
     public class ClientController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public ClientController(UserManager<ApplicationUser> userManager)
+        private readonly IOrderService _orderService;
+        public ClientController(UserManager<ApplicationUser> userManager, IOrderService orderService)
         {
             this._userManager = userManager;
+            _orderService = orderService;
         }
         // GET: ClientController
         public async Task<IActionResult> Index()
@@ -113,7 +115,7 @@ namespace CarSimulatorApp.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Address = user.Address,
-                Email = user.Email,
+                Email =     user.Email,
                 UserName = user.UserName
             };
 
@@ -128,9 +130,12 @@ namespace CarSimulatorApp.Controllers
             string id = bindingModel.Id;
             var user = await _userManager.FindByIdAsync(id);
 
-            if (user == null)
+            if (user == null) return NotFound();
+
+            if (_orderService.UserHasOrders(id))
             {
-                return NotFound();
+                TempData["Error"] = "This user cannot be deleted because they have existing orders.";
+                return RedirectToAction(nameof(Index));
             }
 
             IdentityResult result = await _userManager.DeleteAsync(user);
