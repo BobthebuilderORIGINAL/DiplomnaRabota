@@ -36,9 +36,14 @@ namespace CarSimulatorApp.Controllers
 
         // GET: ProductController
         [AllowAnonymous]
-        public ActionResult Index(string searchStringCategoryName, string searchStringBrandName)
+
+        public ActionResult Index(string searchString,
+                          string searchStringCategoryName,
+                          string searchStringBrandName)
+
         {
-            List<ProductIndexVM> products = _productService.GetProducts(searchStringCategoryName, searchStringBrandName)
+            ViewData["CurrentFilter"] = searchString;
+            List<ProductIndexVM> products = _productService.GetProducts(searchString,searchStringCategoryName,searchStringBrandName)
                 .Select(product => new ProductIndexVM
                 {
                     Id = product.Id,
@@ -54,6 +59,7 @@ namespace CarSimulatorApp.Controllers
                     Description = product.Description
 
                 }).ToList();
+
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userManager.GetUserId(User);

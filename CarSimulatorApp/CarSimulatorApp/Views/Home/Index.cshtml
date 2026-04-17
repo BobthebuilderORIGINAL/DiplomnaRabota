@@ -6,10 +6,20 @@
 
 <style>
     body, main, .container {
+        background: #0f0f13 !important;
+        color: #f0f0f5;
+        font-family: 'DM Sans', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .container {
         max-width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
     }
+
+    main {
+        padding: 0 !important;
     }
 
     .navbar {
@@ -17,32 +27,18 @@
         border-bottom: 2px solid #ff2222 !important;
     }
 
-    .border-bottom {
-        border-bottom: 2px solid #ff2222 !important;
-    }
-
-    .box-shadow {
-        box-shadow: none !important;
-    }
-    nav {
-        background: #0f0f13 !important;
-    }
-
-    main {
-        padding: 0 !important;
-    }
-
+    /* Hero */
     .hero {
+        position: relative;
         width: 100vw;
         margin-left: calc(-50vw + 50%);
-        height: 100vh; /* full viewport height */
-        min-height: unset;
-        position: relative;
+        height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
     }
+
     .hero-video {
         position: absolute;
         inset: 0;
@@ -52,45 +48,14 @@
         opacity: 0.6;
         z-index: 0;
     }
-    /* Dark overlay */
+
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.45);
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.4) 60%, rgba(15,15,19,1) 100%);
         z-index: 1;
     }
 
-    /* Green Wave - Top */
-    .wave-top {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 2;
-        line-height: 0;
-    }
-
-        .wave-top svg {
-            display: block;
-            width: 100%;
-        }
-
-    /* Green Wave - Bottom */
-    .wave-bottom {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        z-index: 2;
-        line-height: 0;
-    }
-
-        .wave-bottom svg {
-            display: block;
-            width: 100%;
-        }
-
-    /* Content */
     .hero-content {
         position: relative;
         z-index: 3;
@@ -100,13 +65,13 @@
 
     .hero-title {
         font-family: 'Syne', sans-serif;
-        font-size: clamp(3.5rem, 10vw, 8rem);
+        font-size: clamp(2.5rem, 7vw, 6rem);
         font-weight: 800;
         letter-spacing: -0.03em;
         line-height: 1;
         color: #f0f0f5;
         margin: 0 0 1.5rem;
-        text-shadow: 0 0 60px rgba(0,0,0,0.8);
+        text-shadow: 0 2px 20px rgba(0,0,0,0.8);
     }
 
         .hero-title span {
@@ -115,10 +80,11 @@
 
     .hero-sub {
         font-size: 1.05rem;
-        color: #a0a0b0;
+        color: #d0d0d8;
         max-width: 480px;
         margin: 0 auto 2rem;
         line-height: 1.7;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.8);
     }
 
         .hero-sub a {
@@ -126,11 +92,6 @@
             text-decoration: none;
             border-bottom: 1px solid #39d98a;
         }
-
-            .hero-sub a:hover {
-                color: #5fffa8;
-                border-color: #5fffa8;
-            }
 
     .hero-btn {
         font-family: 'Syne', sans-serif;
@@ -151,13 +112,12 @@
             background: #ff4444;
             color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 34, 34, 0.4);
+            box-shadow: 0 8px 30px rgba(255,34,34,0.4);
         }
 
-    /* Video selector dots */
     .video-dots {
         position: absolute;
-        bottom: 80px;
+        bottom: 40px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 4;
@@ -177,11 +137,94 @@
     }
 
         .video-dot.active {
-            background: #39d98a;
-            box-shadow: 0 0 8px rgba(57, 217, 138, 0.6);
+            background: #ff2222;
+            box-shadow: 0 0 8px rgba(255,34,34,0.6);
         }
 
-    @@media (max-width: 576px) {
+    /* Features */
+    .features {
+        background: #0f0f13;
+        padding: 5rem 2rem;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .features-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .features-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        text-align: center;
+        color: #f0f0f5;
+        margin-bottom: 3rem;
+        letter-spacing: -0.02em;
+    }
+
+        .features-title span {
+            color: #ff2222;
+        }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        background: #18181f;
+        border: 1px solid #2e2e3a;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        transition: border-color 0.25s, transform 0.25s;
+    }
+
+        .feature-card:hover {
+            border-color: #ff2222;
+            transform: translateY(-4px);
+        }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .feature-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #f0f0f5;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .feature-desc {
+        font-size: 0.85rem;
+        color: #7a7a8c;
+        line-height: 1.6;
+    }
+
+    footer {
+        background: #0f0f13 !important;
+        border-top: 1px solid #ff2222 !important;
+        color: #7a7a8c !important;
+        padding: 1rem 0;
+    }
+
+        footer a {
+            color: #ff2222 !important;
+        }
+
+    @@media (max-width: 768px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
         .hero-title {
             font-size: 3rem;
         }
@@ -189,18 +232,10 @@
 </style>
 
 <div class="hero">
-
-    <!-- Video Background -->
-    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline>
+    <video class="hero-video" id="heroVideo" autoplay muted playsinline>
         <source src="/videos/video1.mp4" type="video/mp4" />
     </video>
-
-    <!-- Overlay -->
     <div class="hero-overlay"></div>
-    
-    
-
-    <!-- Content -->
     <div class="hero-content">
         <h1 class="hero-title">Bob The <span>Driver</span></h1>
         <p class="hero-sub">
@@ -209,35 +244,61 @@
         </p>
         <a asp-controller="Product" asp-action="Index" class="hero-btn">Shop Now →</a>
     </div>
-
-   
-
-    <!-- Video dots -->
     <div class="video-dots">
         <button class="video-dot active" onclick="switchVideo(0)" id="dot0"></button>
         <button class="video-dot" onclick="switchVideo(1)" id="dot1"></button>
     </div>
+</div>
 
+<div class="features">
+    <div class="features-inner">
+        <h2 class="features-title">Why Choose <span>Us</span></h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🚚</span>
+                <p class="feature-title">Fast Delivery</p>
+                <p class="feature-desc">We deliver to every corner of the country quickly and safely.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎮</span>
+                <p class="feature-title">Premium Gear</p>
+                <p class="feature-desc">Only the best sim racing equipment, carefully selected for you.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🛠️</span>
+                <p class="feature-title">24/7 Support</p>
+                <p class="feature-desc">Our team is always here to help you with any questions.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🏆</span>
+                <p class="feature-title">Top Brands</p>
+                <p class="feature-desc">We carry the most trusted brands in the sim racing world.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💳</span>
+                <p class="feature-title">Secure Payments</p>
+                <p class="feature-desc">Shop with confidence — your transactions are always safe.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔄</span>
+                <p class="feature-title">Easy Returns</p>
+                <p class="feature-desc">Not satisfied? Return your order hassle-free within 30 days.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    const videos = [
-        "/videos/video1.mp4",
-        "/videos/video2.mp4"
-    ];
-
-    // Pick random video on page load
+    const videos = ["/videos/video1.mp4", "/videos/video2.mp4"];
     let currentVideo = Math.floor(Math.random() * videos.length);
     const videoEl = document.getElementById('heroVideo');
     videoEl.src = videos[currentVideo];
     videoEl.play();
 
-    // Update dots
     document.querySelectorAll('.video-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === currentVideo);
     });
 
-    // Auto advance when video ends
     videoEl.addEventListener('ended', function () {
         currentVideo = (currentVideo + 1) % videos.length;
         videoEl.src = videos[currentVideo];
@@ -256,3 +317,4 @@
         });
     }
 </script>
+

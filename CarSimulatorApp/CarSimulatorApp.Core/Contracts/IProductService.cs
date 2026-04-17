@@ -15,6 +15,9 @@ namespace CarSimulatorApp.Core.Contracts
         List<Product> GetProducts();
         Product GetProductById(int productId);
         bool RemoveById(int dogproductId);
-        List<Product> GetProducts(string searchStringCategoryName, string searchStringBrandName);
+        List<Product> GetProducts(
+     string searchString,
+     string searchStringCategoryName,
+     string searchStringBrandName);
     }
 }

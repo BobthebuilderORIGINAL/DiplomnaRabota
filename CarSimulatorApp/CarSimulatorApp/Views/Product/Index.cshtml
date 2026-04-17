@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CarSimulatorApp.Models.Product.ProductIndexVM>
+﻿    @model IEnumerable<CarSimulatorApp.Models.Product.ProductIndexVM>
 @{
     ViewData["Title"] = "Product";
 }
@@ -481,7 +481,22 @@
                     
             }
         </select>
-        <button class="filter-submit" type="submit">Apply</button>
+            <button class="filter-submit" type="submit">Apply</button>
+            <form asp-action="Index" method="get">
+
+                <input type="text"
+                       class="search-input"
+                       name="searchString"
+                       placeholder="Search by name..."
+                       value="@ViewData["CurrentFilter"]" />
+
+                <button class="filter-submit" type="submit">
+                    Apply
+                </button>
+
+            </form>
+
+            
     </div>
 </form>
     

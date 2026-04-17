@@ -48,23 +48,39 @@ namespace CarSimulatorApp.Core.Services
             return products;
         }
 
-        public List<Product> GetProducts(string searchStringCategoryName, string searchStringBrandName)
+        public List<Product> GetProducts(
+      string searchString,
+      string searchStringCategoryName,
+      string searchStringBrandName)
         {
-            List<Product> products = _context.Products.ToList();
-            if (!string.IsNullOrEmpty(searchStringCategoryName) && !string.IsNullOrEmpty(searchStringBrandName))
+            var products = _context.Products
+                .AsQueryable();
+
+            // ✅ PRODUCT NAME SEARCH
+            if (!string.IsNullOrEmpty(searchString))
             {
-                products = products.Where(x => x.Category.CategoryName.ToLower().Contains(searchStringCategoryName.ToLower())
-                && x.Brand.BrandName.ToLower().Contains(searchStringBrandName.ToLower())).ToList();
+                products = products.Where(p =>
+                    p.ProductName.ToLower()
+                    .Contains(searchString.ToLower()));
             }
-            else if (!string.IsNullOrEmpty(searchStringCategoryName))
+
+            // ✅ CATEGORY FILTER
+            if (!string.IsNullOrEmpty(searchStringCategoryName))
             {
-                products = products.Where(x => x.Category.CategoryName.ToLower().Contains(searchStringCategoryName.ToLower())).ToList();
+                products = products.Where(p =>
+                    p.Category.CategoryName.ToLower()
+                    .Contains(searchStringCategoryName.ToLower()));
             }
-            else if (!string.IsNullOrEmpty(searchStringBrandName))
+
+            // ✅ BRAND FILTER
+            if (!string.IsNullOrEmpty(searchStringBrandName))
             {
-                products = products.Where(x => x.Brand.BrandName.ToLower().Contains(searchStringBrandName.ToLower())).ToList();
+                products = products.Where(p =>
+                    p.Brand.BrandName.ToLower()
+                    .Contains(searchStringBrandName.ToLower()));
             }
-            return products;
+
+            return products.ToList();
         }
 
         public bool RemoveById(int productId)
