@@ -279,7 +279,53 @@
                     <span class="stat-label">Discount</span>
                     <span class="stat-value">@Html.DisplayFor(model => model.Discount)%</span>
                 </div>
-            </div>
+
+                <!-- ADD THIS -->
+                <div class="stat-box" style="grid-column: 1/-1;">
+                    <span class="stat-label">Rating</span>
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                        @await Html.PartialAsync("_Stars", Model.AverageRating)
+                        <span style="color:#7a7a8c; font-size:0.8rem;">
+                            @if (Model.RatingCount > 0)
+                            {
+                                <text>@Model.AverageRating.ToString("F1") out of 5 (@Model.RatingCount reviews)</text>
+                            }
+                            else
+                            {
+                                <text>No ratings yet</text>
+                            }
+                        </span>
+                    </div>
+                    @if (User.Identity.IsAuthenticated && Model.HasOrdered)
+                    {
+                        <form asp-controller="Rating" asp-action="Rate" method="post" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <span style="color:#7a7a8c; font-size:0.75rem; font-family:'Syne',sans-serif; text-transform:uppercase; letter-spacing:0.1em;">
+                                @(Model.UserRating.HasValue ? "Your rating:" : "Rate this product:")
+                            </span>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="submit" name="stars" value="@i"
+                                        style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:@(Model.UserRating.HasValue && i <= Model.UserRating.Value ? "#ffb830" : "#3a3a4a"); padding:0 2px;"
+                                        onmouseover="hoverStars(this, @i)"
+                                        onmouseout="resetStars(@(Model.UserRating ?? 0))">
+                                    ★
+                                </button>
+                            }
+                            @if (Model.UserRating.HasValue)
+                            {
+                                <span style="color:#7a7a8c; font-size:0.75rem;">(@Model.UserRating.Value/5)</span>
+                            }
+                        </form>
+                    }
+                    else if (User.Identity.IsAuthenticated && !Model.HasOrdered)
+                    {
+                        <span style="color:#7a7a8c; font-size:0.78rem; font-style:italic;">Order this product to leave a rating.</span>
+                    }
+                </div>
+
+            </div> <!-- end details-stats -->
 
             <div class="details-actions">
                 @if (this.User.Identity.IsAuthenticated && Model.Quantity > 0)
@@ -294,6 +340,16 @@
         </div>
     </div>
 </div>
+<script>
+    function hoverStars(el, count) {
+        const stars = el.parentElement.querySelectorAll('button[name="stars"]');
+        stars.forEach((s, i) => s.style.color = i < count ? '#ffb830' : '#3a3a4a');
+    }
+    function resetStars(userRating) {
+        const stars = document.querySelectorAll('button[name="stars"]');
+        stars.forEach((s, i) => s.style.color = i < userRating ? '#ffb830' : '#3a3a4a');
+    }
+</script>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

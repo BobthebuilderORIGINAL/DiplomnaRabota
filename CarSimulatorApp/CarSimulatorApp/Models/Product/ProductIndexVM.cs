@@ -34,5 +34,7 @@ namespace CarSimulatorApp.Models.Product
 
         [Display(Name = "Discount")]
         public decimal Discount { get; set; }
+        public double AverageRating { get; set; }
+        public int RatingCount { get; set; }
     }
 }

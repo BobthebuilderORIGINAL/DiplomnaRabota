@@ -558,9 +558,24 @@
                             {
                                 <text>Qty: @item.Quantity</text>
                             }
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:0.4rem; font-size:0.85rem;">
+                        @await Html.PartialAsync("_Stars", item.AverageRating)
+                        <span style="color:#7a7a8c; font-size:0.75rem;">
+                            @if (item.RatingCount > 0)
+                            {
+                                <text>@item.AverageRating.ToString("F1") (@item.RatingCount)</text>
+                            }
+                            else
+                            {
+                                <text>No ratings</text>
+                            }
                         </span>
                     </div>
                 </div>
+
+                <!-- Actions -->
 
                 <!-- Actions -->
                 <div class="card-actions">

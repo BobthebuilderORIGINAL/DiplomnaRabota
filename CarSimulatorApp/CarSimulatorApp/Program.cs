@@ -42,6 +42,7 @@ namespace CarSimulatorApp
             builder.Services.AddTransient<IOrderService, OrderService>();
             builder.Services.AddTransient<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
 
 
             var app = builder.Build();

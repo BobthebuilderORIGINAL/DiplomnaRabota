@@ -1,0 +1,21 @@
+﻿@model double
+@{
+    int full = (int)Math.Floor(Model);
+    bool half = (Model - full) >= 0.5;
+}
+@for (int i = 1; i <= 5; i++)
+{
+    if (i <= full)
+    {
+        <span style="color:#ffb830;">★</span>
+    }
+    else if (half && i == full + 1)
+    {
+        <span style="color:#ffb830;">½</span>
+        half = false;
+    }
+    else
+    {
+        <span style="color:#3a3a4a;">★</span>
+    }
+}

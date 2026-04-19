@@ -17,5 +17,6 @@ namespace CarSimulatorApp.Data
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Favourites> Favourites { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
     }
 }

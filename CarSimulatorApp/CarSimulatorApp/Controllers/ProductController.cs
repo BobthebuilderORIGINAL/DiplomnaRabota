@@ -20,15 +20,18 @@ namespace CarSimulatorApp.Controllers
         private readonly IBrandService _brandService;                   
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFavouriteService _favouriteService;
+        private readonly IRatingService _ratingService;
 
         public ProductController(IProductService productService, ICategoryService categoryService,
             IBrandService brandService, IFavouriteService favouriteService,
+            IRatingService ratingService,
             UserManager<ApplicationUser> userManager)
         {
             _productService = productService;
             _categoryService = categoryService;
             _brandService = brandService;
             _favouriteService = favouriteService;
+            _ratingService = ratingService;
             _userManager = userManager;
         }
 
@@ -44,21 +47,22 @@ namespace CarSimulatorApp.Controllers
         {
             ViewData["CurrentFilter"] = searchString;
             List<ProductIndexVM> products = _productService.GetProducts(searchString,searchStringCategoryName,searchStringBrandName)
-                .Select(product => new ProductIndexVM
-                {
-                    Id = product.Id,
-                    ProductName = product.ProductName,
-                    BrandId = product.BrandId,
-                    BrandName = product.Brand.BrandName,
-                    CategoryId = product.CategoryId,
-                    CategoryName = product.Category.CategoryName,
-                    Picture = product.Picture,
-                    Quantity = product.Quantity,
-                    Price = product.Price,
-                    Discount = product.Discount,
-                    Description = product.Description
-
-                }).ToList();
+               .Select(product => new ProductIndexVM
+               {
+                   Id = product.Id,
+                   ProductName = product.ProductName,
+                   BrandId = product.BrandId,
+                   BrandName = product.Brand.BrandName,
+                   CategoryId = product.CategoryId,
+                   CategoryName = product.Category.CategoryName,
+                   Picture = product.Picture,
+                   Quantity = product.Quantity,
+                   Price = product.Price,
+                   Discount = product.Discount,
+                   Description = product.Description,
+                   AverageRating = _ratingService.GetAverageRating(product.Id),
+                   RatingCount = _ratingService.GetRatingCount(product.Id)
+               }).ToList();
 
             if (User.Identity.IsAuthenticated)
             {
@@ -90,6 +94,9 @@ namespace CarSimulatorApp.Controllers
             {
                 return NotFound();
             }
+
+            var userId = User.Identity.IsAuthenticated ? _userManager.GetUserId(User) : null;
+
             ProductDetailsVM product = new ProductDetailsVM()
             {
                 Id = item.Id,
@@ -102,8 +109,13 @@ namespace CarSimulatorApp.Controllers
                 Quantity = item.Quantity,
                 Price = item.Price,
                 Discount = item.Discount,
-                Description = item.Description
+                Description = item.Description,
+                AverageRating = _ratingService.GetAverageRating(item.Id),
+                RatingCount = _ratingService.GetRatingCount(item.Id),
+                UserRating = userId != null ? _ratingService.GetUserRating(userId, item.Id) : null,
+                HasOrdered = userId != null && _ratingService.HasOrdered(userId, item.Id)
             };
+
             return View(product);
         }
 
